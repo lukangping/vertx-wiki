@@ -68,13 +68,20 @@ public class MainVerticle extends AbstractVerticle {
 
     router.get("/pages").handler(context -> {
 
+      logger.info("receive request /pages on Thread {}", Thread.currentThread().getName());
+
       mySQLClient.getConnection(ar -> {
         if (ar.failed()) {
           logger.error("mysql connect failed.");
           future.fail(ar.cause());
         } else {
+
+          logger.info("success get mysql connection on Thread {}", Thread.currentThread().getName());
+
           SQLConnection connection = ar.result();
           connection.query("select * from pages", rs -> {
+
+            logger.info("success connection query on Thread {}", Thread.currentThread().getName());
             connection.close();
 
             if (rs.failed()) {
